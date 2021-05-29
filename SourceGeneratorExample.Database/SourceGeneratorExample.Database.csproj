@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
+  </PropertyGroup>
+
+  <Target Name="AddSourceGeneratedFiles" AfterTargets="CoreCompile">
+    <ItemGroup>
+      <Compile Include="GeneratedFiles\**" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="RemoveSourceGeneratedFiles" BeforeTargets="CoreCompile">
+    <ItemGroup>
+      <Compile Remove="GeneratedFiles\**" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="CleanSourceGeneratedFiles" AfterTargets="Clean">
+    <RemoveDir Directories="GeneratedFiles" />
+  </Target>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SourceGenerator.Database.Generator\SourceGenerator.Database.Generator.csproj" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\SourceGeneratorExample.DatabaseAttributes\SourceGeneratorExample.DatabaseAttributes.csproj"  GeneratePathProperty="true" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>
