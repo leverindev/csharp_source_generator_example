@@ -350,3 +350,4 @@ MigrationBackup/
 .ionide/
 
 SourceGeneratorExample.Database/GeneratedFiles/
+.idea/
