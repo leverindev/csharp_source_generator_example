@@ -6,9 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="SourceGeneratorExample.Database">
-      <HintPath>..\SourceGeneratorExample.Database\bin\Debug\netstandard2.0\SourceGeneratorExample.Database.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\SourceGeneratorExample.Database\SourceGeneratorExample.Database.csproj" />
   </ItemGroup>
 
 </Project>

@@ -11,8 +11,8 @@ namespace SourceGenerator.Database.Generator
     [Generator]
     public class DatabaseGenerator : ISourceGenerator
     {
-        private static readonly Type EntityAttributeType = typeof(EntityAttribute);
-        private static readonly Type KeyAttributeType = typeof(KeyAttribute);
+        private static readonly string EntityAttributeTypeName = "EntityAttribute";
+        private static readonly string KeyAttributeTypeName = "KeyAttribute";
 
         private const string SourceTemplate = @"
 using System;
@@ -76,13 +76,13 @@ namespace SourceGeneratorExample.Database
                         continue;
                     }
 
-                    if (!HasAttribute(classDeclarationSyntax, semanticModel, EntityAttributeType))
+                    if (!HasAttribute(classDeclarationSyntax, semanticModel, EntityAttributeTypeName))
                     {
                         continue;
                     }
 
                     var classSymbol = semanticModel.GetDeclaredSymbol(classDeclarationSyntax);
-                    var keyProperty = classSymbol.GetMembers().OfType<IPropertySymbol>().First(p => HasAttribute(p, KeyAttributeType));
+                    var keyProperty = classSymbol.GetMembers().OfType<IPropertySymbol>().First(p => HasAttribute(p, KeyAttributeTypeName));
 
                     context.AddSource($"DbContext.{classSymbol.Name}.Generated.cs", BuildSource(classSymbol, keyProperty));
                 }
@@ -100,7 +100,7 @@ namespace SourceGeneratorExample.Database
                 .Replace("###key_type###", propertySymbol.Type.Name);
         }
 
-        private bool HasAttribute(SyntaxNode syntaxNode, SemanticModel semanticModel, Type attributeType)
+        private bool HasAttribute(SyntaxNode syntaxNode, SemanticModel semanticModel, string attributeTypeName)
         {
             var nodes = syntaxNode
                 .DescendantNodes()
@@ -109,7 +109,7 @@ namespace SourceGeneratorExample.Database
                     .DescendantTokens()
                     .Any(dt =>
                         dt.IsKind(SyntaxKind.IdentifierToken) &&
-                        semanticModel.GetTypeInfo(dt.Parent).Type.Name == attributeType.Name))
+                        semanticModel.GetTypeInfo(dt.Parent).Type.Name == attributeTypeName))
                 ?.DescendantTokens()
                 ?.Where(dt => dt.IsKind(SyntaxKind.IdentifierToken))
                 ?.ToList();
@@ -117,11 +117,11 @@ namespace SourceGeneratorExample.Database
             return nodes is { Count: > 0 };
         }
 
-        private bool HasAttribute(IPropertySymbol propertySymbol, Type attributeType)
+        private bool HasAttribute(IPropertySymbol propertySymbol, string attributeTypeName)
         {
             return propertySymbol
                 .GetAttributes()
-                .Any(a => a?.AttributeClass?.Name == attributeType.Name);
+                .Any(a => a?.AttributeClass?.Name == attributeTypeName);
         }
     }
 }
